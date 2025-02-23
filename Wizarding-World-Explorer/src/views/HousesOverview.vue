@@ -61,6 +61,12 @@ const filteredHouses = computed(() => {
   text-align: left;
   padding: 16px;
 }
+
+.houses-table {
+  width: 100%;
+  max-width: 100%;
+}
+
 .search-input {
   width: 100%;
   padding: 8px;

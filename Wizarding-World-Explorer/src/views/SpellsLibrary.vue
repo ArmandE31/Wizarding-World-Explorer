@@ -75,6 +75,11 @@ const filteredSpells = computed(() => {
   text-align: left;
 }
 
+.spells-table {
+  width: 100%;
+  max-width: 100%;
+}
+
 .filter-select {
   width: 100%;
   padding: 8px;

@@ -74,6 +74,11 @@ const filteredElixirs = computed(() => {
   text-align: left;
 }
 
+.elixirs-table {
+  width: 100%;
+  max-width: 100%;
+}
+
 .no-results {
   text-align: center;
   font-size: 1.2rem;
