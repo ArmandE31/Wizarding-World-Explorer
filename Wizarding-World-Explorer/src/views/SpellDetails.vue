@@ -10,24 +10,28 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-import { useQuery } from '@tanstack/vue-query';
-import { computed } from 'vue';
+import { useRoute } from 'vue-router'
+import { useQuery } from '@tanstack/vue-query'
+import { computed } from 'vue'
 
 type Spell = {
-  id: string;
-  name: string;
-  type: string;
-  effect: string;
-  pronunciation?: string;
-};
+  id: string
+  name: string
+  type: string
+  effect: string
+  pronunciation?: string
+}
 
-const route = useRoute();
+const route = useRoute()
 const fetchSpellDetails = async (): Promise<Spell> => {
-  const res = await fetch(`https://wizard-world-api.herokuapp.com/spells/${route.params.id}`);
-  return res.json();
-};
+  const res = await fetch(`https://wizard-world-api.herokuapp.com/spells/${route.params.id}`)
+  return res.json()
+}
 
-const { data } = useQuery<Spell, Error>({ queryKey: ['spell', route.params.id], queryFn: fetchSpellDetails, enabled: !!route.params.id });
-const spell = computed(() => data.value);
+const { data } = useQuery<Spell, Error>({
+  queryKey: ['spell', route.params.id],
+  queryFn: fetchSpellDetails,
+  enabled: !!route.params.id,
+})
+const spell = computed(() => data.value)
 </script>

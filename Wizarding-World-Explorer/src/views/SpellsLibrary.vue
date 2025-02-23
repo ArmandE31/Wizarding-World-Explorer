@@ -24,44 +24,46 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query';
-import { ref, computed } from 'vue';
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
+import { useQuery } from '@tanstack/vue-query'
+import { ref, computed } from 'vue'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
 
 type Spell = {
-  id: string;
-  name: string;
-  type: string;
-  effect: string;
-  pronunciation?: string;
-};
+  id: string
+  name: string
+  type: string
+  effect: string
+  pronunciation?: string
+}
 
-const searchQuery = ref('');
-const selectedType = ref('');
+const searchQuery = ref('')
+const selectedType = ref('')
 
 const fetchSpells = async (): Promise<Spell[]> => {
-  const res = await fetch('https://wizard-world-api.herokuapp.com/spells');
-  return res.json();
-};
+  const res = await fetch('https://wizard-world-api.herokuapp.com/spells')
+  return res.json()
+}
 
-const { data, isLoading } = useQuery<Spell[], Error>({ queryKey: ['spells'], queryFn: fetchSpells });
+const { data, isLoading } = useQuery<Spell[], Error>({ queryKey: ['spells'], queryFn: fetchSpells })
 
 const spellTypes = computed(() => {
-  const types = new Set((data.value ?? []).map(spell => spell.type));
-  return Array.from(types);
-});
+  const types = new Set((data.value ?? []).map((spell) => spell.type))
+  return Array.from(types)
+})
 
 const filteredSpells = computed(() => {
-  let spells = data.value ?? [];
+  let spells = data.value ?? []
   if (searchQuery.value) {
-    spells = spells.filter(spell => spell.name.toLowerCase().includes(searchQuery.value.toLowerCase()));
+    spells = spells.filter((spell) =>
+      spell.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+    )
   }
   if (selectedType.value) {
-    spells = spells.filter(spell => spell.type === selectedType.value);
+    spells = spells.filter((spell) => spell.type === selectedType.value)
   }
-  return spells;
-});
+  return spells
+})
 </script>
 
 <style>
