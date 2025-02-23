@@ -32,6 +32,9 @@ type Elixir = {
 
 export const useWizardStore = defineStore('wizard', {
   state: () => ({
+    errorHouses: null as string | null,
+    errorSpells: null as string | null,
+    errorElixirs: null as string | null,
     isLoadingHouses: false,
     isLoadingSpells: false,
     isLoadingElixirs: false,
@@ -41,22 +44,46 @@ export const useWizardStore = defineStore('wizard', {
   }),
   actions: {
     async fetchHouses() {
-      this.isLoadingHouses = true
-      const response = await fetch(`${API_BASE_URL}/houses`)
-      this.houses = await response.json()
-      this.isLoadingHouses = false
+      this.errorHouses = null
+      try {
+        this.isLoadingHouses = true
+        const response = await fetch(`${API_BASE_URL}/houses`)
+        this.houses = await response.json()
+      } catch (error) {
+        this.errorHouses = 'Failed to load houses. Please try again later.'
+        console.error('Error fetching houses:', error)
+        this.houses = []
+      } finally {
+        this.isLoadingHouses = false
+      }
     },
     async fetchSpells() {
-      this.isLoadingSpells = true
-      const response = await fetch(`${API_BASE_URL}/spells`)
-      this.spells = await response.json()
-      this.isLoadingSpells = false
+      this.errorSpells = null
+      try {
+        this.isLoadingSpells = true
+        const response = await fetch(`${API_BASE_URL}/spells`)
+        this.spells = await response.json()
+      } catch (error) {
+        this.errorSpells = 'Failed to load spells. Please try again later.'
+        console.error('Error fetching spells:', error)
+        this.spells = []
+      } finally {
+        this.isLoadingSpells = false
+      }
     },
     async fetchElixirs() {
-      this.isLoadingElixirs = true
-      const response = await fetch(`${API_BASE_URL}/elixirs`)
-      this.elixirs = await response.json()
-      this.isLoadingElixirs = false
+      this.errorElixirs = null
+      try {
+        this.isLoadingElixirs = true
+        const response = await fetch(`${API_BASE_URL}/elixirs`)
+        this.elixirs = await response.json()
+      } catch (error) {
+        this.errorElixirs = 'Failed to load elixirs. Please try again later.'
+        console.error('Error fetching elixirs:', error)
+        this.elixirs = []
+      } finally {
+        this.isLoadingElixirs = false
+      }
     },
   },
 })

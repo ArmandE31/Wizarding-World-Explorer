@@ -2,6 +2,9 @@
   <div>
     <h1>Wizarding Spells</h1>
     <div v-if="isLoadingSpells" class="loader"><h1>Loading spells...</h1></div>
+    <div v-if="errorSpells" class="error-message">
+      Failed to load spells. Please try again later.
+    </div>
     <input type="text" v-model="searchQuery" placeholder="Search Spells" class="search-input" />
     <select v-model="selectedType" class="filter-select">
       <option value="">All Types</option>
@@ -20,7 +23,7 @@
         </Column>
       </DataTable>
     </div>
-    <p v-else-if="!isLoadingSpells" class="no-results">No spells found.</p>
+    <p v-else-if="!isLoadingSpells && !errorSpells" class="no-results">No spells found.</p>
   </div>
 </template>
 
@@ -32,7 +35,7 @@ import Column from 'primevue/column'
 import { useWizardStore } from '@/stores/store.ts'
 
 const store = useWizardStore()
-const { spells, isLoadingSpells } = storeToRefs(store)
+const { spells, isLoadingSpells, errorSpells } = storeToRefs(store)
 
 const searchQuery = ref('')
 const selectedType = ref('')

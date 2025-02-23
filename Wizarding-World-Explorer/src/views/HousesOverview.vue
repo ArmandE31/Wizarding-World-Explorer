@@ -2,6 +2,9 @@
   <div>
     <h1>Hogwarts Houses</h1>
     <div v-if="isLoadingHouses" class="loader"><h1>Loading houses...</h1></div>
+    <div v-if="errorHouses" class="error-message">
+      Failed to load houses. Please try again later.
+    </div>
     <input type="text" v-model="searchQuery" placeholder="Search Houses" class="search-input" />
 
     <div v-if="filteredHouses.length > 0">
@@ -16,7 +19,7 @@
         </Column>
       </DataTable>
     </div>
-    <p v-else-if="!isLoadingHouses" class="no-results">No houses found.</p>
+    <p v-else-if="!isLoadingHouses && !errorHouses" class="no-results">No houses found.</p>
   </div>
 </template>
 
@@ -28,7 +31,7 @@ import Column from 'primevue/column'
 import { useWizardStore } from '@/stores/store.ts'
 
 const store = useWizardStore()
-const { houses, isLoadingHouses } = storeToRefs(store)
+const { houses, isLoadingHouses, errorHouses } = storeToRefs(store)
 
 const searchQuery = ref('')
 
