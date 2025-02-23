@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Magical Elixirs</h1>
+    <div v-if="isLoading" class="loader"><h1>Loading elixirs...</h1></div>
     <input type="text" v-model="searchQuery" placeholder="Search Elixirs" class="search-input" />
 
     <div v-if="filteredElixirs.length > 0">
@@ -9,7 +10,7 @@
         <Column field="effect" header="Effect"></Column>
       </DataTable>
     </div>
-    <p v-else class="no-results">No elixirs found.</p>
+    <p v-else-if="!isLoading" >No elixirs found.</p>
   </div>
 </template>
 

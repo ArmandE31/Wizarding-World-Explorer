@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>Wizarding Spells</h1>
+    <div v-if="isLoading" class="loader"><h1>Loading spells...</h1></div>
     <input type="text" v-model="searchQuery" placeholder="Search Spells" class="search-input" />
     <select v-model="selectedType" class="filter-select">
       <option value="">All Types</option>
@@ -19,7 +20,7 @@
         </Column>
       </DataTable>
     </div>
-    <p v-else class="no-results">No spells found.</p>
+    <p v-else-if="!isLoading" >No spells found.</p>
   </div>
 </template>
 
