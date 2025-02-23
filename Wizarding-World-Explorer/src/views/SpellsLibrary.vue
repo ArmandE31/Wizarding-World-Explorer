@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Wizarding Spells</h1>
-    <div v-if="isLoading" class="loader"><h1>Loading spells...</h1></div>
+    <div v-if="isLoadingSpells" class="loader"><h1>Loading spells...</h1></div>
     <input type="text" v-model="searchQuery" placeholder="Search Spells" class="search-input" />
     <select v-model="selectedType" class="filter-select">
       <option value="">All Types</option>
@@ -9,7 +9,7 @@
     </select>
 
     <div v-if="filteredSpells.length > 0">
-      <DataTable :value="filteredSpells" :loading="isLoading" class="spells-table">
+      <DataTable :value="filteredSpells" :loading="isLoadingSpells" class="spells-table">
         <Column field="name" header="Spell Name"></Column>
         <Column field="type" header="Type"></Column>
         <Column field="effect" header="Effect"></Column>
@@ -20,50 +20,43 @@
         </Column>
       </DataTable>
     </div>
-    <p v-else-if="!isLoading" >No spells found.</p>
+    <p v-else-if="!isLoadingSpells" class="no-results">No spells found.</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query'
-import { ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { ref, computed, onMounted } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import { useWizardStore } from '@/stores/store.ts'
 
-type Spell = {
-  id: string
-  name: string
-  type: string
-  effect: string
-  pronunciation?: string
-}
+const store = useWizardStore()
+const { spells, isLoadingSpells } = storeToRefs(store)
 
 const searchQuery = ref('')
 const selectedType = ref('')
 
-const fetchSpells = async (): Promise<Spell[]> => {
-  const res = await fetch('https://wizard-world-api.herokuapp.com/spells')
-  return res.json()
-}
-
-const { data, isLoading } = useQuery<Spell[], Error>({ queryKey: ['spells'], queryFn: fetchSpells })
+onMounted(() => {
+  store.fetchSpells()
+})
 
 const spellTypes = computed(() => {
-  const types = new Set((data.value ?? []).map((spell) => spell.type))
+  const types = new Set(spells.value.map((spell) => spell.type))
   return Array.from(types)
 })
 
 const filteredSpells = computed(() => {
-  let spells = data.value ?? []
+  let filtered = spells.value
   if (searchQuery.value) {
-    spells = spells.filter((spell) =>
+    filtered = filtered.filter((spell) =>
       spell.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
   if (selectedType.value) {
-    spells = spells.filter((spell) => spell.type === selectedType.value)
+    filtered = filtered.filter((spell) => spell.type === selectedType.value)
   }
-  return spells
+  return filtered
 })
 </script>
 

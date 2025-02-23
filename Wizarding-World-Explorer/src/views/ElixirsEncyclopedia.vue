@@ -1,57 +1,61 @@
 <template>
   <div>
     <h1>Magical Elixirs</h1>
-    <div v-if="isLoading" class="loader"><h1>Loading elixirs...</h1></div>
+    <div v-if="isLoadingElixirs" class="loader"><h1>Loading elixirs...</h1></div>
     <input type="text" v-model="searchQuery" placeholder="Search Elixirs" class="search-input" />
+    <select v-model="selectedEffect" class="filter-select">
+      <option value="">All Effects</option>
+      <option v-for="effect in elixirEffects" :key="effect" :value="effect">{{ effect }}</option>
+    </select>
 
     <div v-if="filteredElixirs.length > 0">
-      <DataTable :value="filteredElixirs" :loading="isLoading" class="elixirs-table">
+      <DataTable :value="filteredElixirs" :loading="isLoadingElixirs" class="elixirs-table">
         <Column field="name" header="Elixir Name"></Column>
         <Column field="effect" header="Effect"></Column>
+        <Column>
+          <template #body="{ data }">
+            <router-link :to="`/elixirs/${data.id}`">View Details</router-link>
+          </template>
+        </Column>
       </DataTable>
     </div>
-    <p v-else-if="!isLoading" >No elixirs found.</p>
+    <p v-else-if="!isLoadingElixirs" class="no-results">No elixirs found.</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '@tanstack/vue-query'
-import { ref, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { ref, computed, onMounted } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import { useWizardStore } from '@/stores/store.ts'
 
-type Elixir = {
-  id: string
-  name: string
-  effect: string
-  ingredients: { id: string; name: string }[]
-  instructions?: string
-}
+const store = useWizardStore()
+const { elixirs, isLoadingElixirs } = storeToRefs(store)
 
 const searchQuery = ref('')
 const selectedEffect = ref('')
 
-const fetchElixirs = async (): Promise<Elixir[]> => {
-  const res = await fetch('https://wizard-world-api.herokuapp.com/elixirs')
-  return res.json()
-}
+onMounted(() => {
+  store.fetchElixirs()
+})
 
-const { data, isLoading } = useQuery<Elixir[], Error>({
-  queryKey: ['elixirs'],
-  queryFn: fetchElixirs,
+const elixirEffects = computed(() => {
+  const effects = new Set(elixirs.value.map((elixir) => elixir.effect))
+  return Array.from(effects)
 })
 
 const filteredElixirs = computed(() => {
-  let elixirs = data.value ?? []
+  let filtered = elixirs.value
   if (searchQuery.value) {
-    elixirs = elixirs.filter((elixir) =>
+    filtered = filtered.filter((elixir) =>
       elixir.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
     )
   }
   if (selectedEffect.value) {
-    elixirs = elixirs.filter((elixir) => elixir.effect === selectedEffect.value)
+    filtered = filtered.filter((elixir) => elixir.effect === selectedEffect.value)
   }
-  return elixirs
+  return filtered
 })
 </script>
 
