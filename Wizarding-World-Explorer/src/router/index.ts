@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-import Home from '@/views/Home.vue'
+import HomePage from '@/views/HomePage.vue'
 import HousesOverview from '@/views/HousesOverview.vue'
 import SpellsLibrary from '@/views/SpellsLibrary.vue'
 import ElixirsEncyclopedia from '@/views/ElixirsEncyclopedia.vue'
@@ -8,7 +8,7 @@ import HouseDetails from '@/views/HouseDetails.vue'
 import SpellDetails from '@/views/SpellDetails.vue'
 
 const routes: RouteRecordRaw[] = [
-  { path: '/', component: Home },
+  { path: '/', component: HomePage },
   { path: '/houses', component: HousesOverview },
   { path: '/houses/:id', component: HouseDetails, props: true },
   { path: '/spells', component: SpellsLibrary },

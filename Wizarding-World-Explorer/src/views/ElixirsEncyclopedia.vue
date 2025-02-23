@@ -6,18 +6,14 @@
       Failed to load elixirs. Please try again later.
     </div>
     <input type="text" v-model="searchQuery" placeholder="Search Elixirs" class="search-input" />
-    <select v-model="selectedEffect" class="filter-select">
-      <option value="">All Effects</option>
-      <option v-for="effect in elixirEffects" :key="effect" :value="effect">{{ effect }}</option>
-    </select>
 
     <div v-if="filteredElixirs.length > 0">
       <DataTable :value="filteredElixirs" :loading="isLoadingElixirs" class="elixirs-table">
         <Column field="name" header="Elixir Name"></Column>
         <Column field="effect" header="Effect"></Column>
-        <Column>
+        <Column field="ingredients" header="Ingredients">
           <template #body="{ data }">
-            <router-link :to="`/elixirs/${data.id}`">View Details</router-link>
+            {{ data.ingredients.map(ing => ing.name).join(', ') }}
           </template>
         </Column>
       </DataTable>
@@ -41,11 +37,6 @@ const selectedEffect = ref('')
 
 onMounted(() => {
   store.fetchElixirs()
-})
-
-const elixirEffects = computed(() => {
-  const effects = new Set(elixirs.value.map((elixir) => elixir.effect))
-  return Array.from(effects)
 })
 
 const filteredElixirs = computed(() => {
