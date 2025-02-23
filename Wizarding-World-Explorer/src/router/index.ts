@@ -1,23 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import type { RouteRecordRaw } from 'vue-router'
+import Home from '@/views/Home.vue'
+import HousesMain from '@/views/HousesMain.vue'
+import Spells from '@/views/Spells.vue'
+import Elixirs from '@/views/Elixirs.vue'
+import HouseDetails from '@/views/HouseDetails.vue'
+
+const routes: RouteRecordRaw[] = [
+  { path: '/', component: Home },
+  { path: '/houses', component: HousesMain },
+  { path: '/houses/:id', component: HouseDetails, props: true },
+  { path: '/spells', component: Spells },
+  { path: '/elixirs', component: Elixirs },
+]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-    },
-  ],
+  history: createWebHistory(),
+  routes,
 })
 
 export default router
